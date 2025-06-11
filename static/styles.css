@@ -1,0 +1,14 @@
+body {
+  font-family: sans-serif;
+  margin: 40px;
+}
+h2 {
+  border-bottom: 2px solid #ccc;
+}
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+li {
+  margin-bottom: 8px;
+}
