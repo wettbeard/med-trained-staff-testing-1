@@ -1,1 +1,24 @@
-<!-- Dashboard showing list of clients and certifications -->
+{% extends 'layout.html' %}
+{% block content %}
+<h1>Dashboard</h1>
+<a href="{{ url_for('logout') }}">Logout</a>
+
+<h2>HCPs</h2>
+<ul>
+  {% for hcp in hcps %}
+  <li>{{ hcp.name }}</li>
+  {% endfor %}
+</ul>
+
+<h2>Clients</h2>
+<ul>
+  {% for client in clients %}
+  <li>{{ client.initials }}</li>
+  {% endfor %}
+</ul>
+
+<p>
+  <a href="{{ url_for('new_hcp') }}">Add HCP</a> |
+  <a href="{{ url_for('new_client') }}">Add Client</a>
+</p>
+{% endblock %}

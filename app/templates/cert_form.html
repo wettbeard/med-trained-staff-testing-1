@@ -1,1 +1,10 @@
-<!-- Form for adding/editing certifications -->
+{% extends 'layout.html' %}
+{% block content %}
+  <form method="post">
+    {{ form.hidden_tag() }}
+    {% for field in form if field.name != 'csrf_token' and field.name != 'submit' %}
+      <p>{{ field.label }} {{ field() }}</p>
+    {% endfor %}
+    <p>{{ form.submit() }}</p>
+  </form>
+{% endblock %}
