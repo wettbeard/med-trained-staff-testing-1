@@ -9,4 +9,9 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
-from app import routes, models
+from app import models, routes
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return models.User.query.get(int(user_id))
