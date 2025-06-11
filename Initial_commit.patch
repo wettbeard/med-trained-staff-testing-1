@@ -1,0 +1,263 @@
+Subject: [PATCH] Initial commit
+---
+Index: .gitattributes
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.gitattributes b/.gitattributes
+new file mode 100644
+--- /dev/null	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
++++ b/.gitattributes	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
+@@ -0,0 +1,2 @@
++# Auto detect text files and perform LF normalization
++* text=auto
+Index: .gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+--- /dev/null	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
++++ b/.gitignore	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
+@@ -0,0 +1,6 @@
++venv/
++__pycache__/
++*.pyc
++*.db
++.env
++.idea/
+Index: README.md
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/README.md b/README.md
+new file mode 100644
+--- /dev/null	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
++++ b/README.md	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
+@@ -0,0 +1,2 @@
++# Med-Trained Staff Tracking App
++A Flask app to track medication-trained HCP certifications.
+\ No newline at end of file
+Index: app/__init__.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/__init__.py b/app/__init__.py
+new file mode 100644
+--- /dev/null	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
++++ b/app/__init__.py	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
+@@ -0,0 +1,12 @@
++from flask import Flask
++from flask_sqlalchemy import SQLAlchemy
++from flask_login import LoginManager
++
++app = Flask(__name__)
++app.config.from_object('config')
++
++db = SQLAlchemy(app)
++login_manager = LoginManager(app)
++login_manager.login_view = 'login'
++
++from app import routes, models
+Index: app/forms.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/forms.py b/app/forms.py
+new file mode 100644
+--- /dev/null	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
++++ b/app/forms.py	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
+@@ -0,0 +1,4 @@
++# Flask-WTF forms (e.g., LoginForm, CertificationForm)
++from flask_wtf import FlaskForm
++from wtforms import StringField, SubmitField, BooleanField, DateField
++from wtforms.validators import DataRequired
+Index: app/models.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/models.py b/app/models.py
+new file mode 100644
+--- /dev/null	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
++++ b/app/models.py	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
+@@ -0,0 +1,18 @@
++# SQLAlchemy models
++from app import db
++
++class HCP(db.Model):
++    id = db.Column(db.Integer, primary_key=True)
++    name = db.Column(db.String(100))
++
++class Client(db.Model):
++    id = db.Column(db.Integer, primary_key=True)
++    initials = db.Column(db.String(10))
++    is_primary = db.Column(db.Boolean, default=False)
++
++class Residence(db.Model):
++    id = db.Column(db.Integer, primary_key=True)
++    client_id = db.Column(db.Integer, db.ForeignKey('client.id'))
++    hcp_id = db.Column(db.Integer, db.ForeignKey('hcp.id'))
++    cert_begin_date = db.Column(db.Date)
++    cert_end_date = db.Column(db.Date)
+Index: app/routes.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/routes.py b/app/routes.py
+new file mode 100644
+--- /dev/null	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
++++ b/app/routes.py	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
+@@ -0,0 +1,4 @@
++# Placeholder for route definitions like login, dashboard, cert management
++from flask import render_template, redirect, url_for, request, flash
++from app import app, db
++from app.models import Client, HCP, Residence
+Index: app/static/style.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/static/style.css b/app/static/style.css
+new file mode 100644
+--- /dev/null	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
++++ b/app/static/style.css	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
+@@ -0,0 +1,1 @@
++body { font-family: sans-serif; }
+\ No newline at end of file
+Index: app/templates/cert_form.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/templates/cert_form.html b/app/templates/cert_form.html
+new file mode 100644
+--- /dev/null	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
++++ b/app/templates/cert_form.html	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
+@@ -0,0 +1,1 @@
++<!-- Form for adding/editing certifications -->
+\ No newline at end of file
+Index: app/templates/dashboard.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/templates/dashboard.html b/app/templates/dashboard.html
+new file mode 100644
+--- /dev/null	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
++++ b/app/templates/dashboard.html	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
+@@ -0,0 +1,1 @@
++<!-- Dashboard showing list of clients and certifications -->
+\ No newline at end of file
+Index: app/templates/layout.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/templates/layout.html b/app/templates/layout.html
+new file mode 100644
+--- /dev/null	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
++++ b/app/templates/layout.html	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
+@@ -0,0 +1,1 @@
++<!doctype html><html><body>{% block content %}{% endblock %}</body></html>
+\ No newline at end of file
+Index: app/templates/login.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/templates/login.html b/app/templates/login.html
+new file mode 100644
+--- /dev/null	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
++++ b/app/templates/login.html	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
+@@ -0,0 +1,1 @@
++<!-- Login page form -->
+\ No newline at end of file
+Index: app/templates/revoke_warning.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/templates/revoke_warning.html b/app/templates/revoke_warning.html
+new file mode 100644
+--- /dev/null	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
++++ b/app/templates/revoke_warning.html	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
+@@ -0,0 +1,1 @@
++<!-- Warning before revoking a certification -->
+\ No newline at end of file
+Index: app/templates/search_results.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/templates/search_results.html b/app/templates/search_results.html
+new file mode 100644
+--- /dev/null	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
++++ b/app/templates/search_results.html	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
+@@ -0,0 +1,1 @@
++<!-- Results of HCP or client search -->
+\ No newline at end of file
+Index: app/utils.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/utils.py b/app/utils.py
+new file mode 100644
+--- /dev/null	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
++++ b/app/utils.py	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
+@@ -0,0 +1,4 @@
++# Utility functions such as checking if HCP has revoked certs, etc.
++def check_revoked(hcp_id):
++    # Placeholder logic
++    return False
+Index: config.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/config.py b/config.py
+new file mode 100644
+--- /dev/null	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
++++ b/config.py	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
+@@ -0,0 +1,6 @@
++import os
++
++basedir = os.path.abspath(os.path.dirname(__file__))
++SECRET_KEY = 'your-secret-key'
++SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'database.db')
++SQLALCHEMY_TRACK_MODIFICATIONS = False
+Index: requirements.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/requirements.txt b/requirements.txt
+new file mode 100644
+--- /dev/null	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
++++ b/requirements.txt	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
+@@ -0,0 +1,4 @@
++Flask
++Flask-WTF
++Flask-Login
++Flask-SQLAlchemy
+Index: wsgi.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/wsgi.py b/wsgi.py
+new file mode 100644
+--- /dev/null	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
++++ b/wsgi.py	(revision 9961fe48a5cafb4b549b059c32aaa037133da097)
+@@ -0,0 +1,4 @@
++from app import app
++
++if __name__ == '__main__':
++    app.run(host='0.0.0.0', port=5000, debug=True)
